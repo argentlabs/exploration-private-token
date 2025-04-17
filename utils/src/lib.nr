@@ -35,11 +35,12 @@ pub fn bjj_exp_elgamal_encrypt(
     let base_pt: Gaffine = get_bjj_basept();
     let C1: Gaffine = bjj_affine.mul(randomness, base_pt);
     let plain_embedded: Gaffine = bjj_affine.mul(plaintext as Field, base_pt);
+    println("plain_embedded");
     println(plain_embedded);
     let shared_secret: Gaffine = bjj_affine.mul(randomness, public_key);
+    println("shared_secret");
     println(shared_secret);
     let C2: Gaffine = bjj_affine.add(shared_secret, plain_embedded);
-    println(C2);
     (C1, C2)
 }
 
@@ -70,7 +71,10 @@ fn test_bjj_exp_elgamal_encrypt() {
     let public_key = bjj_priv_to_pub_key(private_key);
     let plaintext = 1000;
     let randomness = 1579974533500091418858266504437497529448349460077355483020454056886908720762;
+    println("randomness");
+    println(randomness);
     let ciphertext = bjj_exp_elgamal_encrypt(public_key, plaintext, randomness);
+    println("C");
     println(ciphertext);
     // assert(ciphertext.0.x == 0x0bb77a6ad63e739b4eacb2e09d6277c12ab8d8010534e0b62893f3f6bb957051);
     // assert(ciphertext.0.y == 0x25797203f7a0b24925572e1cd16bf9edfce0051fb9e133774b3c257a872d7d8b);
