@@ -1,0 +1,45 @@
+from_balance_old_clear = ""
+from_private_key = ""
+from_random = ""
+to_random = ""
+value = ""
+
+[from_public_key]
+x = ""
+y = ""
+
+[to_public_key]
+x = ""
+y = ""
+
+[from_balance_old_encrypted_1]
+x = ""
+y = ""
+
+[from_balance_old_encrypted_2]
+x = ""
+y = ""
+
+[to_balance_old_encrypted_1]
+x = ""
+y = ""
+
+[to_balance_old_encrypted_2]
+x = ""
+y = ""
+
+[from_balance_new_encrypted_1]
+x = ""
+y = ""
+
+[from_balance_new_encrypted_2]
+x = ""
+y = ""
+
+[to_balance_new_encrypted_1]
+x = ""
+y = ""
+
+[to_balance_new_encrypted_2]
+x = ""
+y = ""

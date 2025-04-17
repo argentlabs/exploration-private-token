@@ -1,0 +1,23 @@
+private_key = ""
+random = ""
+value = ""
+
+[public_key]
+x = ""
+y = ""
+
+[balance_before_encrypted_1]
+x = ""
+y = ""
+
+[balance_before_encrypted_2]
+x = ""
+y = ""
+
+[balance_after_encrypted_1]
+x = ""
+y = ""
+
+[balance_after_encrypted_2]
+x = ""
+y = ""

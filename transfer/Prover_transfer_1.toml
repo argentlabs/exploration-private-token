@@ -1,0 +1,45 @@
+from_balance_old_clear = "10000"
+from_private_key = "0x03c96f78ed310623e3b00fd5260d90647996193c19984c24b4ca92ec73c5d8e0"
+from_random = "2"
+to_random = "3"
+value = "1000"
+
+[from_public_key]
+x = "0x1cda22076db52c0b803c239b6515e88e2e2ae819aec57a4601599b0e9ca1ec9a"
+y = "0x27e92be248c00a5d0e387a641474370d593f1724de2774ff663c6442d9ac75bf"
+
+[to_public_key]
+x = "0x1865e98a61eb14dd9366fbc6808c3cd93aec7cf0adcecd86711c17e8e96cf95a"
+y = "0x2a6b15f46f69a6a6f8991466900b57585a49e31643cc04b0070f6d74db9f9fdc"
+
+[from_balance_old_encrypted_1]
+x = "0x0bb77a6ad63e739b4eacb2e09d6277c12ab8d8010534e0b62893f3f6bb957051"
+y = "0x25797203f7a0b24925572e1cd16bf9edfce0051fb9e133774b3c257a872d7d8b"
+
+[from_balance_old_encrypted_2]
+x = "0xa5356b9190d621e862294797bca129cddcea3a6ed5bc215a84fc472146c9a4"
+y = "0x29c2f427e739cda8dcd518c79f5e6fdaf0d7702ca5661cbfb1130b7623e7524e"
+
+[to_balance_old_encrypted_1]
+x = "0"
+y = "0"
+
+[to_balance_old_encrypted_2]
+x = "0"
+y = "0"
+
+[from_balance_new_encrypted_1]
+x = "0x162d7e417903fa1c82f2d227e35b846b1133cfca4f558b5feb9fdcd5f81dd902"
+y = "0x01666cafbf0a30da8b9ebeaf848a1da067a892296f1043188e1705402b6d6853"
+
+[from_balance_new_encrypted_2]
+x = "0x2070d907fa5d28ede359112538ca83955b80ae7776497400ad076fffb1dba9f7"
+y = "0x172756813c1336f2934c1423b0143df3ff094669f34e791a2d7ce0b49467325d"
+
+[to_balance_new_encrypted_1]
+x = "0x061c1436d1c3008037e887c8234dcf7c33c947ad93695b8000fcb4ab70477e3e"
+y = "0x21d66f0e2295ae954494f25889f9319cc1b4df71eff3f46ba9e4631b43fd7c95"
+
+[to_balance_new_encrypted_2]
+x = "0x0eb736bdaeee35791de5ca67b030a21567f23a6fe3d349d51378c2bdaedd3ead"
+y = "0x24a8e64e144851ee57b88ee76f136ef3b9b2087c683940217590013ac8b0f246"
