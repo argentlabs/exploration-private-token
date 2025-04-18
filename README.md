@@ -1,23 +1,23 @@
 ## Development
 
-### Install Noir
+### Install Noir 1.0.0-beta.3
 
 ```
 curl -L https://raw.githubusercontent.com/noir-lang/noirup/refs/heads/main/install | bash
-noirup
+noirup --version 1.0.0-beta.3
 ```
 
-### Install the Bartenberg prover
+### Install the Bartenberg prover 0.85.0
 
 ```
 curl -L https://raw.githubusercontent.com/AztecProtocol/aztec-packages/refs/heads/master/barretenberg/bbup/install | bash
-bbup
+bbup --version 0.85.0
 ```
 
-### Install Garaga
+### Install Garaga 0.17.0
 
 ```
-pip install garaga
+pip install garaga==0.17.0
 ```
 
 ## Building the mint circuit and verifying contract
@@ -31,7 +31,8 @@ Compile the circuit:
 
 Generate the verifying key:
 ```
-> bb write_vk_ultra_keccak_honk -b target/mint.json -o target/vk.bin
+> bb write_vk --scheme ultra_honk --oracle_hash keccak -b target/mint.json -o target/
+> mv target/vk target/vk.bin
 ```
 
 Generate the verifying contract from the verifying key:
@@ -50,7 +51,8 @@ Generate the witness from the inputs in `Prover_mint.toml`:
 
 Generate the proof:
 ```
-> bb prove_ultra_keccak_honk -b target/mint.json -w target/mint.gz -o target/proof.bin
+> bb prove -s ultra_honk --oracle_hash keccak -b target/mint.json -w target/mint.gz -o target/
+> mv target/proof target/proof.bin
 ```
 
 Format the proof and the public inputs as calldata for the verifying contract:

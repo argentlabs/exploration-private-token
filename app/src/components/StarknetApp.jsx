@@ -197,10 +197,8 @@ const StarknetApp = () => {
       const balanceBefore = await contracts.tokenContract.balance_of(account.address);
       const encryptedValue = await elgamalEncrypt(mintValue, publicKey, random);
       const balanceAfter = addEncryptedValues(balanceBefore, encryptedValue);
-      console.log("balanceBefore", balanceBefore);
-      console.log("balanceAfter", balanceAfter);
-      console.log("publicKey", publicKey);
-      //const proof = await getMintProof(privateKey, random, mintValue, publicKey, balanceBefore, balanceAfter);
+      const proof_as_calldata = await getMintProof(privateKey, random, mintValue, publicKey, balanceBefore, balanceAfter);
+      console.log(proof_as_calldata);
     } catch (error) {
       setStatusMessage(`Error minting: ${error.message}`);
       return;

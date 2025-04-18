@@ -1,385 +1,385 @@
-use garaga::definitions::{G1Point, G2Line, u384, u288};
+use garaga::definitions::{G1Point, G2Line, u288, u384};
 use garaga::utils::noir::HonkVk;
 
-pub const vk: HonkVk =
-    HonkVk {
-        circuit_size: 131072,
-        log_circuit_size: 17,
-        public_inputs_size: 20,
-        public_inputs_offset: 1,
-        qm: G1Point {
-            x: u384 {
-                limb0: 0xc7c3d78a0f4c2615ba958a7b,
-                limb1: 0xffc52da1aa900bbce31db5ec,
-                limb2: 0x1d6732cc57fd094,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x6f4525a41d025c42da309147,
-                limb1: 0x4513faa30416a5888c6c4716,
-                limb2: 0x1b82146f05c03afd,
-                limb3: 0x0,
-            },
+// _vk_hash = keccak256(vk_bytes)
+// vk_hash = hades_permutation(_vk_hash.low, _vk_hash.high, 2)
+pub const VK_HASH: felt252 = 0x3d731f0ecbc92c2705c70ae3122653d3e40da550621fde7e3d9f7b18b17142c;
+pub const vk: HonkVk = HonkVk {
+    circuit_size: 131072,
+    log_circuit_size: 17,
+    public_inputs_size: 36,
+    public_inputs_offset: 1,
+    qm: G1Point {
+        x: u384 {
+            limb0: 0x7f4e81e9b7ece942466d63e8,
+            limb1: 0x809530dee60b0cd5871d3911,
+            limb2: 0x17e6af1cb38adcab,
+            limb3: 0x0,
         },
-        qc: G1Point {
-            x: u384 {
-                limb0: 0xee1b5b2c394766c51bede0e4,
-                limb1: 0x99a8b8b881aed940fcbf7e32,
-                limb2: 0xf596a243b004f73,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x21cbe0a9f2d2485114f787c4,
-                limb1: 0x83a21bce42c45742d4d9c63a,
-                limb2: 0xf8e70b15f098e2d,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0x326df0a38a8a2190d8ca8d99,
+            limb1: 0x943b5e19d3b6fad4c6570a6f,
+            limb2: 0x12b24338f2157432,
+            limb3: 0x0,
         },
-        ql: G1Point {
-            x: u384 {
-                limb0: 0x242d87765c31cc02b7a16f15,
-                limb1: 0xc89b1d9aa80c79b9e8ecb06b,
-                limb2: 0xad250b7d7cc28c7,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x69529e878359df80778f39f6,
-                limb1: 0xb8ca570dc82561f68de12aff,
-                limb2: 0x15fe9c864876d114,
-                limb3: 0x0,
-            },
+    },
+    qc: G1Point {
+        x: u384 {
+            limb0: 0x1048c0ca0a18c3ad515926b8,
+            limb1: 0xee2e15c4baa3081f2d0e23f,
+            limb2: 0x15f9267fb3bd38ff,
+            limb3: 0x0,
         },
-        qr: G1Point {
-            x: u384 {
-                limb0: 0xe439d1a76c1a80b23249e195,
-                limb1: 0xbb557c644302ab659c8f1c02,
-                limb2: 0x2f5bb7b2b59f19b5,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xe3e3e9ee03c947fc22a6d191,
-                limb1: 0x89df0896941cc2622f1d1dce,
-                limb2: 0x25d2d2ab0c428028,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0xef12bebf7c95698757ee2e78,
+            limb1: 0x506af4d5cb9ddf85f95b1bf6,
+            limb2: 0x279ce7a8747e8d11,
+            limb3: 0x0,
         },
-        qo: G1Point {
-            x: u384 {
-                limb0: 0xbeffb8da050d2f34d4f822c5,
-                limb1: 0x73404f27845c6cee90a30498,
-                limb2: 0x19946a3aa3031131,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x59053ee1586b5150a67043fd,
-                limb1: 0xf48259e74ee4f3cf563e54a,
-                limb2: 0x229ea0fd6365d845,
-                limb3: 0x0,
-            },
+    },
+    ql: G1Point {
+        x: u384 {
+            limb0: 0x11c875beb4b5b6a1448f3887,
+            limb1: 0x77a555ff131d3168f1f6497d,
+            limb2: 0x27f3b70599091c42,
+            limb3: 0x0,
         },
-        q4: G1Point {
-            x: u384 {
-                limb0: 0x6faf81070c0fd2cb8657198b,
-                limb1: 0x9f4449e94f0c0c408ec39d1b,
-                limb2: 0x1c2ebdab3241a5be,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x85a94aaaefbc348380cd07bc,
-                limb1: 0x371a637a90e19961159f57f9,
-                limb2: 0xe33b71fa2ab2d30,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0xb3bac62e15c9483936633d92,
+            limb1: 0x3ebb427a68b7e40bbfb98d8f,
+            limb2: 0x12ff7d8ff4d0b8b6,
+            limb3: 0x0,
         },
-        qArith: G1Point {
-            x: u384 {
-                limb0: 0x7cde5056d4c775b9bf3b6f8c,
-                limb1: 0x6466e14e8a98e560b3a01dd5,
-                limb2: 0xd39ae6b75e71e23,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x3f526cf2513cf7bc0f376740,
-                limb1: 0x82882a9d7a5ba06a929db4f4,
-                limb2: 0x17bf43a8455e90b,
-                limb3: 0x0,
-            },
+    },
+    qr: G1Point {
+        x: u384 {
+            limb0: 0x22081bfd6051b58f2bdffece,
+            limb1: 0xcdb950061ac87e6734567835,
+            limb2: 0x279ccaf15e26d071,
+            limb3: 0x0,
         },
-        qDeltaRange: G1Point {
-            x: u384 {
-                limb0: 0x301a2489188643121747975a,
-                limb1: 0x874b224bd1e3fc431a0bfacf,
-                limb2: 0x5d12266b7e61734,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xaa4a08a4b77d31c7e0b77499,
-                limb1: 0xdc8df567c91b2a425ae7b658,
-                limb2: 0x1b3cb3f005b01933,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0xdd268204e598e5545850663,
+            limb1: 0xb8468c0c8d1a3f903677330a,
+            limb2: 0xd57b0254894be17,
+            limb3: 0x0,
         },
-        qElliptic: G1Point {
-            x: u384 {
-                limb0: 0x2c91479933b31132a85220ac,
-                limb1: 0x52308f178a71e331fe1c38ac,
-                limb2: 0x84f861cd52d0b76,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x65435ea5edeaed0c247d9624,
-                limb1: 0x2d2cfbc182a0401b1af03a05,
-                limb2: 0x3f6139ea21a340e,
-                limb3: 0x0,
-            },
+    },
+    qo: G1Point {
+        x: u384 {
+            limb0: 0x4cc549d206cf33be91a807d1,
+            limb1: 0x5c1647d596480456b4c4850a,
+            limb2: 0x127db45e8a2714a3,
+            limb3: 0x0,
         },
-        qAux: G1Point {
-            x: u384 {
-                limb0: 0xbbed1cf67234bd16f3ffe3e5,
-                limb1: 0x2239567b4f9c711ddefe0cbb,
-                limb2: 0x18c7db6b1aaf66fd,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x9cf240f2b1cd3cb0645e1a2f,
-                limb1: 0xd6a22ccb4474e3743ede046f,
-                limb2: 0x186603d5ae36d021,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0xfa6fbaefa54b08d3fe9d14d0,
+            limb1: 0xc78e87d1190ef428c1d6fd0d,
+            limb2: 0x2c0ff65bfb4648a4,
+            limb3: 0x0,
         },
-        qLookup: G1Point {
-            x: u384 {
-                limb0: 0x87e19460e38f8dcd2c72e6cc,
-                limb1: 0x290b0294052f77fa074fc1c2,
-                limb2: 0x25e265c379b13804,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xfcd69dfb7fe23bcb74c16ebe,
-                limb1: 0x171c0a449190a962d47ae3ec,
-                limb2: 0x17a6c84e91dc031b,
-                limb3: 0x0,
-            },
+    },
+    q4: G1Point {
+        x: u384 {
+            limb0: 0x756ec93877f027be1d169960,
+            limb1: 0x3ea52fe1bbc72e69296d6989,
+            limb2: 0x176d8081450e5197,
+            limb3: 0x0,
         },
-        qPoseidon2External: G1Point {
-            x: u384 {
-                limb0: 0xacda7080bbc617ee1141e821,
-                limb1: 0x96283d687e89a052dd91aa30,
-                limb2: 0xc91db115909ab3e,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xece1ef85a863cae2f94220e7,
-                limb1: 0x639ea94219a67a98a6cfcaf1,
-                limb2: 0x1eabe929171d9d34,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0x650da5183051ec6b30482a33,
+            limb1: 0xede19ee0ddedcbf09231a075,
+            limb2: 0x941fbb635e5b67f,
+            limb3: 0x0,
         },
-        qPoseidon2Internal: G1Point {
-            x: u384 {
-                limb0: 0xe3283adc1cf9699864451370,
-                limb1: 0x14c2ade46d0f898e77c2d8d8,
-                limb2: 0xcf8995565e93e2a,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xdfe0c8be467b6b36246c46d0,
-                limb1: 0x9223d41070086b586633d551,
-                limb2: 0x2b78677ac951821d,
-                limb3: 0x0,
-            },
+    },
+    qLookup: G1Point {
+        x: u384 {
+            limb0: 0x5c1284cc175810d1d140a979,
+            limb1: 0x2c3b13673b24e0dfdb9f0c64,
+            limb2: 0xa2d8c0514d57513,
+            limb3: 0x0,
         },
-        s1: G1Point {
-            x: u384 {
-                limb0: 0xca411540f574547e1e2b0f6e,
-                limb1: 0x18649f93f064c86911008f84,
-                limb2: 0x119160a4882148c8,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xac0b5778402d7a436201ce70,
-                limb1: 0xc9c3192da151e67c94fdc0f1,
-                limb2: 0x302f3dd64564cd46,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0x1189290218b6ff65ced7587b,
+            limb1: 0xb0503d3e533b886ac038a42e,
+            limb2: 0x2a9582d5e77aee,
+            limb3: 0x0,
         },
-        s2: G1Point {
-            x: u384 {
-                limb0: 0x900a9626f18e9d8176c45fe3,
-                limb1: 0xd2bcc67c18740e186712bf67,
-                limb2: 0x24e9430f07cb5cd0,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x4e25d23ab7afaa227a8c4eaa,
-                limb1: 0x45b6c5002462fa06dc03f2e8,
-                limb2: 0x3056a8d1bab4be99,
-                limb3: 0x0,
-            },
+    },
+    qArith: G1Point {
+        x: u384 {
+            limb0: 0x63c23319acbb4d0cf41d01ca,
+            limb1: 0xb66039c0cd161c5f8becedf3,
+            limb2: 0x21fc14eb50813ad0,
+            limb3: 0x0,
         },
-        s3: G1Point {
-            x: u384 {
-                limb0: 0x6d2b719c9e6ac411e89068d4,
-                limb1: 0x457f203792e91505ad1ef02e,
-                limb2: 0xdf8d7bb0d45d9ea,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xf2fba184c072d4dbe4bcc90,
-                limb1: 0xdeb47a4ed1e1871e5520b856,
-                limb2: 0xc9ff664c2776a58,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0x310af6db3820989596a76a5e,
+            limb1: 0xb4b208fef523bb8555ed6cbf,
+            limb2: 0x179d74609d95e9e2,
+            limb3: 0x0,
         },
-        s4: G1Point {
-            x: u384 {
-                limb0: 0xa276fcacb705271c2c3f23b5,
-                limb1: 0x378a6793ffbcb2b1935fb791,
-                limb2: 0x1b6ccc52093c1acd,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xbc0a45fa00c2ef010e049a69,
-                limb1: 0x7129b2c33f7d1bb9f708530c,
-                limb2: 0xb38f36d43300ec7,
-                limb3: 0x0,
-            },
+    },
+    qDeltaRange: G1Point {
+        x: u384 {
+            limb0: 0x83a9833de0aa3793acd831bf,
+            limb1: 0xb737434b6845ccaf1a59b654,
+            limb2: 0x123029e7b4a3beb9,
+            limb3: 0x0,
         },
-        id1: G1Point {
-            x: u384 {
-                limb0: 0x7766ab8c9780c307701fb896,
-                limb1: 0x7382c96c9c131e4f29433507,
-                limb2: 0xe410a174a830d2c,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xb3f5328b45c948d0c89843d2,
-                limb1: 0xebec150acfde9a04e1f22cbb,
-                limb2: 0x168b4f3457a325db,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0x9326aaed45d639a5e134d8d,
+            limb1: 0x93101ec9844cbc2958db3a04,
+            limb2: 0x220c5334d5ed0493,
+            limb3: 0x0,
         },
-        id2: G1Point {
-            x: u384 {
-                limb0: 0x81a82cd99e2a55b4ae132f31,
-                limb1: 0xee74737e051383b17a739e1,
-                limb2: 0x610e34887fb9fbe,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x544047fe8f0d04a30c6e0cee,
-                limb1: 0x2577156463256cbb15f5b50a,
-                limb2: 0x2cefa5af16bbcf4e,
-                limb3: 0x0,
-            },
+    },
+    qElliptic: G1Point {
+        x: u384 {
+            limb0: 0x913b7e8e1abe721bb6ad7059,
+            limb1: 0x1b002be21703e07cfb244b04,
+            limb2: 0x26292d018b6b30d5,
+            limb3: 0x0,
         },
-        id3: G1Point {
-            x: u384 {
-                limb0: 0x3446a251e95e3f6ebfe06b63,
-                limb1: 0x40a53d896a2a7033fc34337,
-                limb2: 0x20c78ee93f6e1893,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x28e96a1eb3035f6814316831,
-                limb1: 0x184e120507dcd9329d361009,
-                limb2: 0x233d8dc0e9ebdae5,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0x1ffa8024a97c626e078a5ca7,
+            limb1: 0x4adef012f35c46cc2ac890f3,
+            limb2: 0x1d0f90eb5057f425,
+            limb3: 0x0,
         },
-        id4: G1Point {
-            x: u384 {
-                limb0: 0x53985c4a0f60f96c44a5c1c5,
-                limb1: 0xa960f54e58e5f420cd6cd5ef,
-                limb2: 0x2a9959f524fb7977,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0x31103727ef68482416f8f136,
-                limb1: 0xca974d891dd5285866deb6f4,
-                limb2: 0x24c0b8686d109cb3,
-                limb3: 0x0,
-            },
+    },
+    qAux: G1Point {
+        x: u384 {
+            limb0: 0x5011fd156a9fd48b92b7cef5,
+            limb1: 0xeb8d0c516febb9e03634245c,
+            limb2: 0xbcbe4161fbbd281,
+            limb3: 0x0,
         },
-        t1: G1Point {
-            x: u384 {
-                limb0: 0xbe1072a3a1ea980a6610c825,
-                limb1: 0x4f616aeaa196362c24245fb5,
-                limb2: 0x239ece4925bd5338,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xd798f54ea20a84d083892101,
-                limb1: 0x743dec198169bddb69fe6e34,
-                limb2: 0x1a8d3b2c953657e8,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0x55d41394191bb7ea0032cf35,
+            limb1: 0xc9b4e68df8db0592f81dcd23,
+            limb2: 0x26142132fa5cb5e3,
+            limb3: 0x0,
         },
-        t2: G1Point {
-            x: u384 {
-                limb0: 0xb1521bc3928096dc8cb9db7e,
-                limb1: 0xcaa6f2f8a81eac0c254170dc,
-                limb2: 0x1c06842c2bbb85ba,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xc43ebeb3f6370e809c66b6f6,
-                limb1: 0x884385b8c1ff05592c264360,
-                limb2: 0x56bc2be8d669931,
-                limb3: 0x0,
-            },
+    },
+    qPoseidon2External: G1Point {
+        x: u384 {
+            limb0: 0x39d300baa1f40fc7343090bb,
+            limb1: 0xd1d055775a96a9dddea1dbd7,
+            limb2: 0x255fc201d8668beb,
+            limb3: 0x0,
         },
-        t3: G1Point {
-            x: u384 {
-                limb0: 0x9b98a0c69208cc596e1cba12,
-                limb1: 0xd77692ef95641fb9ca3a4cf0,
-                limb2: 0x8d8c2eb92f2866d,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xe6571eb99f737f8d64478c54,
-                limb1: 0x448ebe4458ded9a1aa028d97,
-                limb2: 0x2d0544f597a2a26,
-                limb3: 0x0,
-            },
+        y: u384 {
+            limb0: 0xdca09e14db7ca7d69fb71662,
+            limb1: 0xf80c6c8ec2b3252362cdb73,
+            limb2: 0x278829e80a4fce70,
+            limb3: 0x0,
         },
-        t4: G1Point {
-            x: u384 {
-                limb0: 0x3b4eca551229c69a75f9586d,
-                limb1: 0xa19479fb379dcd9eb839207d,
-                limb2: 0x26acdcf5d5a4898,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xf9bc6d39d3a56a39557de95c,
-                limb1: 0x2581ec75bf86e09f6d719ca4,
-                limb2: 0xfe3d37b71380ce7,
-                limb3: 0x0,
-            },
+    },
+    qPoseidon2Internal: G1Point {
+        x: u384 {
+            limb0: 0xe752de58104ac55bc7d56ffc,
+            limb1: 0x57898c7b60a2a4c1ff221ae0,
+            limb2: 0x1cd5b53589ca059a,
+            limb3: 0x0,
         },
-        lagrange_first: G1Point {
-            x: u384 { limb0: 0x1, limb1: 0x0, limb2: 0x0, limb3: 0x0 },
-            y: u384 { limb0: 0x2, limb1: 0x0, limb2: 0x0, limb3: 0x0 },
+        y: u384 {
+            limb0: 0xe33b6072a5c97629cb82fd63,
+            limb1: 0x93a57a99d8e05b846e2cb7f6,
+            limb2: 0x149eba936a24addf,
+            limb3: 0x0,
         },
-        lagrange_last: G1Point {
-            x: u384 {
-                limb0: 0x7c1cee01824a8f59e06c37ec,
-                limb1: 0x93502d2ca999ba761aeb3400,
-                limb2: 0x1289db912f83d56f,
-                limb3: 0x0,
-            },
-            y: u384 {
-                limb0: 0xb487c92d1a2796132e0c5d56,
-                limb1: 0xbd3e1eccd7c0ac04e34e691,
-                limb2: 0x71845abd2dd29df,
-                limb3: 0x0,
-            },
+    },
+    s1: G1Point {
+        x: u384 {
+            limb0: 0x35080a4cb8cf39c3d01e3f89,
+            limb1: 0xabc55d5cdde6bf2655c21cb8,
+            limb2: 0x18a314a54c160bb,
+            limb3: 0x0,
         },
-    };
+        y: u384 {
+            limb0: 0x9ed95c88f325dd7ce094f5ba,
+            limb1: 0xb249381f76f0e65d5de4226a,
+            limb2: 0x275b58dfa145ada7,
+            limb3: 0x0,
+        },
+    },
+    s2: G1Point {
+        x: u384 {
+            limb0: 0x44e6c64ad3f3eb46a892c2fc,
+            limb1: 0x7a55918d4044331056f3cea9,
+            limb2: 0x17805f29496924cb,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0xba922a05b419839e968e2548,
+            limb1: 0xba4e4746f7d11b007e773201,
+            limb2: 0x7b5b51870be54ef,
+            limb3: 0x0,
+        },
+    },
+    s3: G1Point {
+        x: u384 {
+            limb0: 0x98e5a8eacb23ba29e6414d5b,
+            limb1: 0x6f3fc36d6e22ab3914c5b004,
+            limb2: 0x24c6d47c4ee10c26,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0xa30d0297fcfeea7b0e0352ec,
+            limb1: 0x2e3554c88b2d0775422a4aa6,
+            limb2: 0x278bc4eb306c6f43,
+            limb3: 0x0,
+        },
+    },
+    s4: G1Point {
+        x: u384 {
+            limb0: 0xe7b738bd639956a40cfccf5,
+            limb1: 0x9f6ae387f04854f29e06ce56,
+            limb2: 0x192291010c5f519b,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0x30cfc14331a1198a43c87967,
+            limb1: 0x17f634268992ed0970b9013a,
+            limb2: 0x1f57ec3a65a5871b,
+            limb3: 0x0,
+        },
+    },
+    id1: G1Point {
+        x: u384 {
+            limb0: 0x56550e6cc93d007ab51275bc,
+            limb1: 0x4abf990551c05e062e8d7ba9,
+            limb2: 0x23dc885dacecb00a,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0x435b0469d7dfbd4209bf8c9e,
+            limb1: 0x3a7111820f517fa05f7f6558,
+            limb2: 0x2e90d527cfb30b54,
+            limb3: 0x0,
+        },
+    },
+    id2: G1Point {
+        x: u384 {
+            limb0: 0xe01c029d667c99430d74a5d9,
+            limb1: 0x3b1144c81860f4d54abbcc17,
+            limb2: 0x56951823929de5b,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0xa9f8e8a77984fe8392c90a1b,
+            limb1: 0x9f9c8cf9138842cd39ef89,
+            limb2: 0x24090632775900b2,
+            limb3: 0x0,
+        },
+    },
+    id3: G1Point {
+        x: u384 {
+            limb0: 0x919b6433170f0ea6fb98e576,
+            limb1: 0xe3fa105e43f8517aade33002,
+            limb2: 0x1c7019827994fab8,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0x91f4f808b21ef5ece38965dd,
+            limb1: 0x16e50275ba60e4b1bdad03b2,
+            limb2: 0x40bb083bc12ec81,
+            limb3: 0x0,
+        },
+    },
+    id4: G1Point {
+        x: u384 {
+            limb0: 0xe3aaeb3120e97b6a5dcd3c5e,
+            limb1: 0x57ad9a68157956d19744af99,
+            limb2: 0x1cb943fb8b88b824,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0x7b87a3e2900b9ba0da81d49,
+            limb1: 0x9ce8e8d6d4c2e0ef86da5be4,
+            limb2: 0x9f630276a928ca2,
+            limb3: 0x0,
+        },
+    },
+    t1: G1Point {
+        x: u384 {
+            limb0: 0x384bdebfaed6eea2bfd38d6c,
+            limb1: 0x8df4980cae57473d3b214e0d,
+            limb2: 0x2b14f338729a3306,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0x1a6edf1403ee81a164fcf306,
+            limb1: 0xa34f4bb2aa6585388f2faa75,
+            limb2: 0x265777f7a0cec3dc,
+            limb3: 0x0,
+        },
+    },
+    t2: G1Point {
+        x: u384 {
+            limb0: 0xbd81a3d3aece82d9e15de7f5,
+            limb1: 0xc978b1bca6e53a271f436dd8,
+            limb2: 0x1e9a51c26287291a,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0x8d38e6200c3f67bff1551b45,
+            limb1: 0x5d1383c0d704fd39c1c967b,
+            limb2: 0x14f26899c4a52edf,
+            limb3: 0x0,
+        },
+    },
+    t3: G1Point {
+        x: u384 {
+            limb0: 0x4c1f7ac647252baad959a96e,
+            limb1: 0x1ce293f09443b9a4941e0afe,
+            limb2: 0x286ad90a75dbd14d,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0xe6e99d63754098895ae08f6d,
+            limb1: 0xf0412378f25b55d49dc74729,
+            limb2: 0x22c35ea94c1a5e20,
+            limb3: 0x0,
+        },
+    },
+    t4: G1Point {
+        x: u384 {
+            limb0: 0xed9b35f0857a60e8ebddc4c9,
+            limb1: 0x37e3e069595d5c5eb2596d59,
+            limb2: 0x22fb79e76cca8fdf,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0xfc148640aaa0411795b7c930,
+            limb1: 0xf8c5089ed9164e4bbe515351,
+            limb2: 0xbfb0491651d130e,
+            limb3: 0x0,
+        },
+    },
+    lagrange_first: G1Point {
+        x: u384 { limb0: 0x1, limb1: 0x0, limb2: 0x0, limb3: 0x0 },
+        y: u384 { limb0: 0x2, limb1: 0x0, limb2: 0x0, limb3: 0x0 },
+    },
+    lagrange_last: G1Point {
+        x: u384 {
+            limb0: 0x7d308782e22f64d0136133db,
+            limb1: 0x7b9d74107294ed9499807748,
+            limb2: 0xf6cdafbdd1e2fbd,
+            limb3: 0x0,
+        },
+        y: u384 {
+            limb0: 0x68b99ce908efe2c4c23a5006,
+            limb1: 0xeb6f704da474f425ab28e25b,
+            limb2: 0x5a3281a4aadcd90,
+            limb3: 0x0,
+        },
+    },
+};
 
-pub const precomputed_lines: [
-    G2Line
-    ; 176] = [
+pub const precomputed_lines: [G2Line; 176] = [
     G2Line {
         r0a0: u288 {
             limb0: 0x4d347301094edcbfa224d3d5,
@@ -4253,4 +4253,3 @@ pub const precomputed_lines: [
         },
     },
 ];
-

@@ -14,6 +14,7 @@ export const privateKeyToPublicKey = (privateKey) => {
 };
 
 export const getRandomValue = () => {
+
     // Create a new array to store the random bytes
     const array = new Uint8Array(32); // 256 bits = 32 bytes
     // Fill the array with cryptographically secure random values
