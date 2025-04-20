@@ -1,6 +1,6 @@
 import { createFileManager, compile } from "@noir-lang/noir_wasm";
-import mintCircuitJson from "../../../mint/target/mint.json";
-import mintVk from "../../../mint/target/vk.bin?url";
+import mintCircuitJson from "../assets/mint.json";
+import mintVk from "../assets/mint_vk.bin?url";
 import initNoirC from "@noir-lang/noirc_abi";
 import initACVM from "@noir-lang/acvm_js";
 import acvm from "@noir-lang/acvm_js/web/acvm_js_bg.wasm?url";

@@ -61,6 +61,13 @@ Format the proof and the public inputs as calldata for the verifying contract:
 > garaga calldata --system ultra_keccak_honk --vk vk.bin --proof proof.bin --format array
 ```
 
+## Deploying the contracts
+
+```
+> cd scripts
+> sncast --account sepolia_test script run deploy --network sepolia
+```
+
 ## Test use case
 
 User 1: 

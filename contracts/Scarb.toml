@@ -1,0 +1,25 @@
+[package]
+name = "private_token"
+version = "0.1.0"
+edition = "2024_07"
+
+[dependencies]
+garaga = { git = "https://github.com/keep-starknet-strange/garaga.git", tag = "v0.17.0" }
+starknet = "2.11.4"
+
+[dev-dependencies]
+snforge_std = "0.40.0"
+assert_macros = "2.8.4"
+
+[cairo]
+sierra-replace-ids = false
+inlining-strategy = 2
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
+casm-add-pythonic-hints = true
+
+
+[tool.scarb]
+allow-prebuilt-plugins = ["snforge_std"]

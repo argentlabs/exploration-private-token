@@ -1,1 +1,0 @@
-{"version":1,"contracts":[{"id":"9420ru5euj9h0","package_name":"mint","contract_name":"MintVerifier","module_path":"mint::mint_verifier::MintVerifier","artifacts":{"sierra":"mint_MintVerifier.contract_class.json","casm":"mint_MintVerifier.compiled_contract_class.json"}}]}

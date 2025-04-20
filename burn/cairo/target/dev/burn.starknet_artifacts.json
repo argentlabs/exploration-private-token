@@ -1,1 +1,0 @@
-{"version":1,"contracts":[{"id":"o36fs4rj4j2j4","package_name":"burn","contract_name":"BurnVerifier","module_path":"burn::burn_verifier::BurnVerifier","artifacts":{"sierra":"burn_BurnVerifier.contract_class.json","casm":"burn_BurnVerifier.compiled_contract_class.json"}}]}

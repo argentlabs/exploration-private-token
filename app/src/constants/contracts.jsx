@@ -32,7 +32,7 @@ export const createContracts = (account) => {
 
 // Export contract addresses and ABIs
 export const TOKEN_CONTRACT = {
-    address: '0x03e3f65168290783365fcfc5782d39ab82a0c7bf8ddb7e75808ca2b472a1db89',
+    address: '0x36efb0d3716946cca64e413e749c0d872aff92ef92af254b99e266e7d54731d',
     abi: [
         {
             "type": "impl",
@@ -178,7 +178,7 @@ export const TOKEN_CONTRACT = {
 }
 
 export const KEY_REGISTRATION_CONTRACT = {
-    address: '0x07aa08eda03f876a093a790bf216d2d940678348a9f6dbe09c8be569e28eedd2',
+    address: '0x1bb46de423c6954179bd8c0102c8fbec2c5c7a4aff2c5b5933f93049c0cff16',
     abi: [
         {
             "type": "impl",
