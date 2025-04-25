@@ -1,0 +1,23 @@
+# Ignore build artifacts
+/target/
+**/*.rs.bk
+
+# Ignore generated WASM files
+*.wasm
+*.wasm.d.ts
+*.wasm.js
+
+# Ignore Cargo.lock
+Cargo.lock
+
+# Ignore node_modules
+/node_modules/
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.iml
+
+# Ignore OS files
+.DS_Store
+Thumbs.db

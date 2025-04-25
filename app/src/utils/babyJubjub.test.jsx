@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest'
-import { privateKeyToPublicKey, elgamalEncrypt } from './babyJubjub.jsx';
+import { privateKeyToPublicKey, elgamalEncrypt, elgamalDecryptEmbedded } from './babyJubjub.jsx';
+import { Base8, mulPointEscalar, addPoint } from "@zk-kit/baby-jubjub";
 
 test('Elgamal encryption: should correctly encrypt values', async () => {
     // Test values
@@ -25,4 +26,23 @@ test('Elgamal encryption: should correctly encrypt values', async () => {
     expect(result.c1_y).toBe(BigInt('11165946630881659555111915726274743875256328341562199247811517387550774714424'));
     expect(result.c2_x).toBe(BigInt('7198688426181357889598958753037561608904034060422956007373876991164938861068'));
     expect(result.c2_y).toBe(BigInt('13984109590330063406126336848167745938573970017863306036449331951156684523256'));
+});
+
+test('Elgamal decryption: should correctly decrypt values', async () => {
+    const value = BigInt('1000');
+    const privateKey = BigInt('1712844159787528649208347389118675504046037977008704584632052244742798694624');
+    const encrypted = {
+        c1_x: BigInt('15367807528450505302967513039648255157392220098696457168601845357864369892929'),
+        c1_y: BigInt('11165946630881659555111915726274743875256328341562199247811517387550774714424'),
+        c2_x: BigInt('7198688426181357889598958753037561608904034060422956007373876991164938861068'),
+        c2_y: BigInt('13984109590330063406126336848167745938573970017863306036449331951156684523256')
+    };
+
+    const plainEmbedded = mulPointEscalar(Base8, value);
+    const result = await elgamalDecryptEmbedded(privateKey, encrypted);
+
+    console.log(result);
+    console.log(plainEmbedded);
+
+    expect(result).toStrictEqual(plainEmbedded);
 });

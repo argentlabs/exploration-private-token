@@ -32,7 +32,7 @@ export const createContracts = (account) => {
 
 // Export contract addresses and ABIs
 export const TOKEN_CONTRACT = {
-    address: '0x36efb0d3716946cca64e413e749c0d872aff92ef92af254b99e266e7d54731d',
+    address: '0x39622eb39a5cbfa94bb29a8d553c74c899a2e6e0fdede7807ef73e21f11f97e',
     abi: [
         {
             "type": "impl",
@@ -107,6 +107,22 @@ export const TOKEN_CONTRACT = {
                 },
                 {
                     "type": "function",
+                    "name": "burn",
+                    "inputs": [
+                        {
+                            "name": "value",
+                            "type": "core::integer::u256"
+                        },
+                        {
+                            "name": "proof_with_inputs",
+                            "type": "core::array::Span::<core::felt252>"
+                        }
+                    ],
+                    "outputs": [],
+                    "state_mutability": "external"
+                },
+                {
+                    "type": "function",
                     "name": "transfer",
                     "inputs": [
                         {
@@ -160,6 +176,10 @@ export const TOKEN_CONTRACT = {
                 },
                 {
                     "name": "mint_verifier",
+                    "type": "core::starknet::contract_address::ContractAddress"
+                },
+                {
+                    "name": "burn_verifier",
                     "type": "core::starknet::contract_address::ContractAddress"
                 },
                 {

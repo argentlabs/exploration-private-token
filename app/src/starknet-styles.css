@@ -230,3 +230,112 @@
 .key-value {
   font-family: monospace;
 }
+
+/* Add these styles to your existing CSS file */
+
+.info-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.info-box {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.info-box h3 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.75rem;
+}
+
+.info-section {
+  margin-bottom: 1.5rem;
+}
+
+.info-section h4 {
+  margin-top: 0;
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.key-info,
+.balance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.key-component,
+.balance-component {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.key-label,
+.balance-label {
+  font-weight: 600;
+  color: #666;
+  width: 100px;
+}
+
+.key-value,
+.balance-value {
+  font-family: monospace;
+  color: #333;
+  word-break: break-all;
+  font-size: 0.8rem;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.no-key-message,
+.loading-message {
+  color: #888;
+  font-style: italic;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.registered-message {
+  text-align: center;
+  padding: 1rem;
+}
+
+.btn-secondary {
+  background: #6c757d;
+}
+
+@media (min-width: 768px) {
+
+  .key-info,
+  .balance-info {
+    flex-direction: column;
+  }
+}
+
+.private-key-status {
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.private-key-status p {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-style: italic;
+  margin: 0;
+}

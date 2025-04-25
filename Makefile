@@ -9,6 +9,9 @@ install-barretenberg:
 install-garaga:
 	pip install garaga==0.17.0
 
+install-wasm-pack:
+	curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
 build-circuits:
 	cd mint && nargo compile && bb write_vk --scheme ultra_honk --oracle_hash keccak -b target/mint.json -o target/
 	cd burn && nargo compile && bb write_vk --scheme ultra_honk --oracle_hash keccak -b target/burn.json -o target/
@@ -25,6 +28,9 @@ build-contracts:
 
 deploy-contracts:
 	cd contracts/scripts && sncast --account sepolia_test script run deploy --network sepolia
+
+build-babygiant:
+	cd babygiant && cargo build && wasm-pack build --target web --out-dir ../app/src/wasm/babygiant
 
 artifacts:
 	cp ./circuits/mint/target/mint.json ./app/src/assets/mint.json

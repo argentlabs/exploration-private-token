@@ -71,15 +71,27 @@ fn test_bjj_exp_elgamal_encrypt() {
     let public_key = bjj_priv_to_pub_key(private_key);
     let plaintext = 1000;
     let randomness = 1579974533500091418858266504437497529448349460077355483020454056886908720762;
-    println("randomness");
-    println(randomness);
     let ciphertext = bjj_exp_elgamal_encrypt(public_key, plaintext, randomness);
-    println("C");
     println(ciphertext);
     // assert(ciphertext.0.x == 0x0bb77a6ad63e739b4eacb2e09d6277c12ab8d8010534e0b62893f3f6bb957051);
     // assert(ciphertext.0.y == 0x25797203f7a0b24925572e1cd16bf9edfce0051fb9e133774b3c257a872d7d8b);
     // assert(ciphertext.1.x == 0xa5356b9190d621e862294797bca129cddcea3a6ed5bc215a84fc472146c9a4);
     // assert(ciphertext.1.y == 0x29c2f427e739cda8dcd518c79f5e6fdaf0d7702ca5661cbfb1130b7623e7524e);
+}
+
+#[test]
+fn test_bjj_exp_elgamal_decrypt() {
+    let private_key = 1712844159787528649208347389118675504046037977008704584632052244742798694624;
+    let public_key = bjj_priv_to_pub_key(private_key);
+    let plaintext = 1000;
+    let randomness = 1579974533500091418858266504437497529448349460077355483020454056886908720762;
+    let ciphertext = bjj_exp_elgamal_encrypt(public_key, plaintext, randomness);
+    let decrypted = bjj_exp_elgamal_decrypt(private_key, ciphertext);
+    let bjj_affine: AffineCurve = get_bjj_curve();
+    let base_pt: Gaffine = get_bjj_basept();
+    let plaintext_exp = bjj_affine.mul(plaintext, base_pt);
+    println(decrypted);
+    assert(decrypted == plaintext_exp);
 }
 
 #[test]

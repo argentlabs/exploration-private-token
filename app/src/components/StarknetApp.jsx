@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../starknet-styles.css';
 import { createContracts } from '../constants/contracts.jsx';
 import { DEFAULT_NETWORK } from '../constants/networks.jsx';
-import { privateKeyToPublicKey, getRandomValue, elgamalEncrypt, addEncryptedValues } from '../utils/babyJubjub.jsx';
+import { privateKeyToPublicKey, getRandomValue, elgamalEncrypt, addEncryptedValues, decryptBalance } from '../utils/babyJubjub.jsx';
 import { RpcProvider, cairo } from 'starknet';
-import { getMintProof } from '../utils/proving.jsx';
+import { getMintProof, getBurnProof, getTransferProof } from '../utils/proving.jsx';
 
 const StarknetApp = () => {
   // State management
@@ -18,6 +18,8 @@ const StarknetApp = () => {
   const [privateKey, setPrivateKey] = useState(null);
   const [isKeyRegistered, setIsKeyRegistered] = useState(false);
   const [contracts, setContracts] = useState(null);
+  const [balanceEncrypted, setBalanceEncrypted] = useState(null);
+  const [balance, setBalance] = useState(null);
 
   // Input fields state
   const [inputs, setInputs] = useState({
@@ -64,8 +66,57 @@ const StarknetApp = () => {
     checkWallet();
   }, []);
 
+  const updatePublicKey = async () => {
+    if (connected && account && contracts) {
+      const registeredKey = await contracts.keyRegistryContract.get_key(account.address);
+      setPublicKey({ x: registeredKey.x, y: registeredKey.y });
+    }
+  }
+
+  // Function to fetch and update balance
+  const updateBalance = async () => {
+    if (connected && account && contracts) {
+      try {
+        const balanceResult = await contracts.tokenContract.balance_of(account.address);
+        setBalanceEncrypted(balanceResult);
+        console.log("Updated encrypted balance");
+
+        // If we have a private key, decrypt the balance
+        if (privateKey) {
+          try {
+            // Assuming you have a function to decrypt the balance
+            console.log("Decrypting balance");
+            const decryptedBalance = await decryptBalance(balanceResult, privateKey);
+            setBalance(decryptedBalance);
+            console.log("Updated decrypted balance:", decryptedBalance);
+          } catch (decryptError) {
+            console.error("Error decrypting balance:", decryptError);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching encrypted balance:", error);
+      }
+    }
+  };
+
+  const waitForTransaction = async (txHash) => {
+    console.log("waiting for transaction", txHash);
+    await window.starknet.provider.waitForTransaction(txHash);
+  }
+
+  // Update balance when connected or when account/contracts change
+  useEffect(() => {
+    if (connected && account && contracts) {
+      updateBalance();
+      updatePublicKey();
+      if (privateKey) {
+        updateBalance();
+      }
+    }
+  }, [connected, account, contracts, privateKey]);
+
   // Connect wallet function
-  const connectWallet = () => {
+  const connectWallet = async () => {
     if (!window.starknet) {
       setStatusMessage("No Starknet wallet extension detected. Please install Argent X or Braavos.");
       return;
@@ -124,41 +175,6 @@ const StarknetApp = () => {
     }
   };
 
-  // Function to execute a contract interaction
-  const executeContractInteraction = async (contractAddress, functionName, calldata, actionName) => {
-    if (!connected || !account) {
-      setStatusMessage('No wallet connected');
-      return;
-    }
-
-    setLoading(true);
-    setStatusMessage(`${actionName}...`);
-    setTxHash('');
-
-    try {
-      window.starknet.account.execute({
-        contractAddress,
-        entrypoint: functionName,
-        calldata,
-      })
-        .then(response => {
-          setTxHash(response.transaction_hash);
-          setStatusMessage(`${actionName} transaction submitted! Hash: ${response.transaction_hash.substring(0, 10)}...`);
-        })
-        .catch(error => {
-          console.error(`${actionName} error:`, error);
-          setStatusMessage(`Error: ${error.message || `Failed to ${actionName.toLowerCase()}`}`);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } catch (error) {
-      console.error(`${actionName} preparation error:`, error);
-      setStatusMessage(`Error: ${error.message || `Failed to prepare ${actionName.toLowerCase()}`}`);
-      setLoading(false);
-    }
-  };
-
   // Action handlers
   const registerKey = async () => {
     if (!inputs.privateKey) {
@@ -194,18 +210,82 @@ const StarknetApp = () => {
     try {
       const random = getRandomValue();
       const mintValue = BigInt(inputs.mintValue);
-      const balanceBefore = await contracts.tokenContract.balance_of(account.address);
+      const balanceBefore = balanceEncrypted;
       const encryptedValue = await elgamalEncrypt(mintValue, publicKey, random);
       const balanceAfter = addEncryptedValues(balanceBefore, encryptedValue);
       const proof_as_calldata = await getMintProof(privateKey, random, mintValue, publicKey, balanceBefore, balanceAfter);
-      console.log(proof_as_calldata);
+      const tx = await contracts.tokenContract.mint(cairo.uint256(mintValue), proof_as_calldata.slice(1));
+      await waitForTransaction(tx.transaction_hash);
+      await updateBalance();
     } catch (error) {
       setStatusMessage(`Error minting: ${error.message}`);
       return;
     }
   }
-  const burn = async () => await executeContractInteraction(contracts.tokenContract.address, 'burn', [], 'Burning');
-  const transfer = async () => await executeContractInteraction(contracts.tokenContract.address, 'transfer', [], 'Transferring');
+  const burn = async () => {
+    if (!inputs.burnValue || !contracts) {
+      setStatusMessage('Please enter a value');
+      return;
+    }
+
+    try {
+      const random = getRandomValue();
+      const burnValue = BigInt(inputs.burnValue);
+      if (burnValue > balance) {
+        setStatusMessage('Burn value is greater than balance');
+        return;
+      }
+      const balanceBeforeClear = balance;
+      const balanceAfterClear = balanceBeforeClear - burnValue;
+      const balanceBefore = balanceEncrypted;
+      const balanceAfter = await elgamalEncrypt(balanceAfterClear, publicKey, random);
+      const proof_as_calldata = await getBurnProof(privateKey, random, balanceBeforeClear, burnValue, publicKey, balanceBefore, balanceAfter);
+      const tx = await contracts.tokenContract.burn(cairo.uint256(burnValue), proof_as_calldata.slice(1));
+      await waitForTransaction(tx.transaction_hash);
+      // After successful mint, update balance
+      await updateBalance();
+    } catch (error) {
+      setStatusMessage(`Error minting: ${error.message}`);
+      return;
+    }
+  }
+  const transfer = async () => {
+    if (!inputs.transferTo || !inputs.transferValue || !contracts) {
+      setStatusMessage('Please enter a value');
+      return;
+    }
+    const transferValue = BigInt(inputs.transferValue);
+    const transferTo = BigInt(inputs.transferTo);
+
+    const fromRandom = getRandomValue();
+    const toRandom = getRandomValue();
+    const fromBalanceBeforeClear = balance;
+    const fromPublicKey = publicKey;
+    const toPublicKey = await contracts.keyRegistryContract.get_key(transferTo);
+    const fromBalanceBeforeEncrypted = balanceEncrypted;
+    const toBalanceBeforeEncrypted = await contracts.tokenContract.balance_of(transferTo);
+    const fromBalanceAfterClear = fromBalanceBeforeClear - transferValue;
+    const fromBalanceAfterEncrypted = await elgamalEncrypt(fromBalanceAfterClear, fromPublicKey, fromRandom);
+    const valueEncrypted = await elgamalEncrypt(transferValue, toPublicKey, toRandom);
+    const toBalanceAfterEncrypted = addEncryptedValues(toBalanceBeforeEncrypted, valueEncrypted);
+
+    const proof_as_calldata = await getTransferProof(
+      privateKey,
+      fromRandom,
+      toRandom,
+      transferValue,
+      fromBalanceBeforeClear,
+      fromPublicKey,
+      { x: toPublicKey.x, y: toPublicKey.y },
+      fromBalanceBeforeEncrypted,
+      toBalanceBeforeEncrypted,
+      fromBalanceAfterEncrypted,
+      toBalanceAfterEncrypted,
+    );
+    const tx = await contracts.tokenContract.transfer(transferTo, proof_as_calldata.slice(1));
+    await waitForTransaction(tx.transaction_hash);
+    await updateBalance();
+  }
 
   // View transaction in explorer
   const viewTransaction = () => {
@@ -245,51 +325,115 @@ const StarknetApp = () => {
         )}
       </div>
 
+      {/* New balance and key info box - displayed when connected */}
+      {connected && (
+        <div className="info-container">
+          <div className="info-box">
+            <h3>Account Information</h3>
+
+            {publicKey.x && publicKey.y && (publicKey.x !== 0 || publicKey.y !== 0) ? (
+              <>
+                <div className="info-section">
+                  <h4>Public Key</h4>
+                  <div className="key-info">
+                    <div className="key-component">
+                      <span className="key-label">X:</span>
+                      <span className="key-value">0x{publicKey.x.toString(16)}</span>
+                    </div>
+                    <div className="key-component">
+                      <span className="key-label">Y:</span>
+                      <span className="key-value">0x{publicKey.y.toString(16)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {balanceEncrypted ? (
+                  <div className="info-section">
+                    <h4>Balance</h4>
+                    <div className="key-info">
+                      <div className="key-component">
+                        <span className="key-label">Value:</span>
+                        {balance !== null ? (
+                          <span className="key-value">{balance.toString()}</span>
+                        ) : (
+                          <span className="key-value">0x{balanceEncrypted.c1_x.toString(16)}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="info-section">
+                    <h4>Balance</h4>
+                    <p className="no-balance-message">No balance</p>
+                  </div>
+                )}
+
+                {/* Add private key status indicator */}
+                {privateKey ? (
+                  <div className="private-key-status">
+                    <p>Private Key provided</p>
+                  </div>
+                ) : (
+                  <div className="private-key-status">
+                    <p>Private Key not provided</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="info-section">
+                <h4>Public Key</h4>
+                <p className="no-key-message">No public key registered</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Main content */}
       <div className="starknet-container">
         <div className="card">
           <div className="actions-grid">
-            {/* Register Key Section */}
-            <div className="action-section">
-              <div className="action-title">
-                {isKeyRegistered ? 'Your Public Key' : 'Register Key'}
+            {/* Register Key Section - Only show if private key not provided */}
+            {!privateKey && (
+              <div className="action-section">
+                <div className="action-title">Set Private Key</div>
+                {!isKeyRegistered ? (
+                  <>
+                    <div className="input-group">
+                      <label className="input-label">
+                        <span className="label-text">Private Key</span>
+                        <input
+                          type="text"
+                          name="privateKey"
+                          value={inputs.privateKey}
+                          onChange={handleInputChange}
+                          placeholder="Enter your private key"
+                          className="input-field"
+                        />
+                      </label>
+                    </div>
+                    <button
+                      onClick={registerKey}
+                      disabled={loading || !connected}
+                      className="btn btn-success"
+                    >
+                      Register Key
+                    </button>
+                  </>
+                ) : (
+                  <div className="registered-message">
+                    <p>Your key has been registered</p>
+                    <button
+                      onClick={registerKey}
+                      disabled={loading || !connected}
+                      className="btn btn-secondary"
+                    >
+                      Update Key
+                    </button>
+                  </div>
+                )}
               </div>
-              {isKeyRegistered ? (
-                <div className="public-key-display">
-                  <div className="key-component">
-                    <span className="key-label">X:</span>
-                    <span className="key-value">{publicKey.x}</span>
-                  </div>
-                  <div className="key-component">
-                    <span className="key-label">Y:</span>
-                    <span className="key-value">{publicKey.y}</span>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="input-group">
-                    <label className="input-label">
-                      <span className="label-text">Private Key</span>
-                      <input
-                        type="text"
-                        name="privateKey"
-                        value={inputs.privateKey}
-                        onChange={handleInputChange}
-                        placeholder="Enter your private key"
-                        className="input-field"
-                      />
-                    </label>
-                  </div>
-                  <button
-                    onClick={registerKey}
-                    disabled={loading || !connected}
-                    className="btn btn-success"
-                  >
-                    Register Key
-                  </button>
-                </>
-              )}
-            </div>
+            )}
 
             {/* Mint Section */}
             <div className="action-section">
