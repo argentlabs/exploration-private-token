@@ -339,3 +339,49 @@
   font-style: italic;
   margin: 0;
 }
+
+.btn-generating {
+  background: #6c757d;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-generating::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
+  animation: btn-loading 1.5s infinite;
+}
+
+@keyframes btn-loading {
+  100% {
+    left: 100%;
+  }
+}
+
+.btn-submitting {
+  background: #17a2b8;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-submitting::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
+  animation: btn-loading 1.5s infinite;
+}

@@ -30,6 +30,20 @@ const StarknetApp = () => {
     transferValue: '100'
   });
 
+  // Add these state variables to track proof generation status
+  const [proofStatus, setProofStatus] = useState({
+    mint: false,
+    burn: false,
+    transfer: false
+  });
+
+  // Add transaction status tracking
+  const [txStatus, setTxStatus] = useState({
+    mint: false,
+    burn: false,
+    transfer: false
+  });
+
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -208,18 +222,34 @@ const StarknetApp = () => {
     }
 
     try {
+      // Set proof generation status
+      setProofStatus(prev => ({ ...prev, mint: true }));
+
       const random = getRandomValue();
       const mintValue = BigInt(inputs.mintValue);
       const balanceBefore = balanceEncrypted;
       const encryptedValue = await elgamalEncrypt(mintValue, publicKey, random);
       const balanceAfter = addEncryptedValues(balanceBefore, encryptedValue);
+
+      // Generate proof with status message
+      setStatusMessage('Generating mint proof...');
       const proof_as_calldata = await getMintProof(privateKey, random, mintValue, publicKey, balanceBefore, balanceAfter);
+
+      // Reset proof status and set transaction status
+      setProofStatus(prev => ({ ...prev, mint: false }));
+      setTxStatus(prev => ({ ...prev, mint: true }));
+
+      setStatusMessage('Submitting transaction...');
       const tx = await contracts.tokenContract.mint(cairo.uint256(mintValue), proof_as_calldata.slice(1));
       await waitForTransaction(tx.transaction_hash);
       await updateBalance();
+      setStatusMessage('Mint successful!');
     } catch (error) {
       setStatusMessage(`Error minting: ${error.message}`);
-      return;
+    } finally {
+      // Reset both statuses
+      setProofStatus(prev => ({ ...prev, mint: false }));
+      setTxStatus(prev => ({ ...prev, mint: false }));
     }
   }
   const burn = async () => {
@@ -229,6 +259,9 @@ const StarknetApp = () => {
     }
 
     try {
+      // Set proof generation status
+      setProofStatus(prev => ({ ...prev, burn: true }));
+
       const random = getRandomValue();
       const burnValue = BigInt(inputs.burnValue);
       if (burnValue > balance) {
@@ -238,53 +271,92 @@ const StarknetApp = () => {
       const balanceBeforeClear = balance;
       const balanceAfterClear = balanceBeforeClear - burnValue;
       const balanceBefore = balanceEncrypted;
+
+      // Generate encrypted balance after
+      setStatusMessage('Encrypting new balance...');
       const balanceAfter = await elgamalEncrypt(balanceAfterClear, publicKey, random);
+
+      // Generate proof with status message
+      setStatusMessage('Generating burn proof...');
       const proof_as_calldata = await getBurnProof(privateKey, random, balanceBeforeClear, burnValue, publicKey, balanceBefore, balanceAfter);
+
+      // Reset proof status and set transaction status
+      setProofStatus(prev => ({ ...prev, burn: false }));
+      setTxStatus(prev => ({ ...prev, burn: true }));
+
+      setStatusMessage('Submitting transaction...');
       const tx = await contracts.tokenContract.burn(cairo.uint256(burnValue), proof_as_calldata.slice(1));
       await waitForTransaction(tx.transaction_hash);
-      // After successful mint, update balance
       await updateBalance();
+      setStatusMessage('Burn successful!');
     } catch (error) {
-      setStatusMessage(`Error minting: ${error.message}`);
-      return;
+      setStatusMessage(`Error burning: ${error.message}`);
+    } finally {
+      // Reset both statuses
+      setProofStatus(prev => ({ ...prev, burn: false }));
+      setTxStatus(prev => ({ ...prev, burn: false }));
     }
   }
   const transfer = async () => {
     if (!inputs.transferTo || !inputs.transferValue || !contracts) {
-      setStatusMessage('Please enter a value');
+      setStatusMessage('Please enter a recipient address and transfer amount');
       return;
     }
-    const transferValue = BigInt(inputs.transferValue);
-    const transferTo = BigInt(inputs.transferTo);
 
-    const fromRandom = getRandomValue();
-    const toRandom = getRandomValue();
-    const fromBalanceBeforeClear = balance;
-    const fromPublicKey = publicKey;
-    const toPublicKey = await contracts.keyRegistryContract.get_key(transferTo);
-    const fromBalanceBeforeEncrypted = balanceEncrypted;
-    const toBalanceBeforeEncrypted = await contracts.tokenContract.balance_of(transferTo);
-    const fromBalanceAfterClear = fromBalanceBeforeClear - transferValue;
-    const fromBalanceAfterEncrypted = await elgamalEncrypt(fromBalanceAfterClear, fromPublicKey, fromRandom);
-    const valueEncrypted = await elgamalEncrypt(transferValue, toPublicKey, toRandom);
-    const toBalanceAfterEncrypted = addEncryptedValues(toBalanceBeforeEncrypted, valueEncrypted);
+    try {
+      // Set proof generation status
+      setProofStatus(prev => ({ ...prev, transfer: true }));
 
-    const proof_as_calldata = await getTransferProof(
-      privateKey,
-      fromRandom,
-      toRandom,
-      transferValue,
-      fromBalanceBeforeClear,
-      fromPublicKey,
-      { x: toPublicKey.x, y: toPublicKey.y },
-      fromBalanceBeforeEncrypted,
-      toBalanceBeforeEncrypted,
-      fromBalanceAfterEncrypted,
-      toBalanceAfterEncrypted,
-    );
-    const tx = await contracts.tokenContract.transfer(transferTo, proof_as_calldata.slice(1));
-    await waitForTransaction(tx.transaction_hash);
-    await updateBalance();
+      const transferValue = BigInt(inputs.transferValue);
+      const transferTo = BigInt(inputs.transferTo);
+
+      const fromRandom = getRandomValue();
+      const toRandom = getRandomValue();
+      const fromBalanceBeforeClear = balance;
+      const fromPublicKey = publicKey;
+
+      setStatusMessage('Fetching recipient public key...');
+      const toPublicKey = await contracts.keyRegistryContract.get_key(transferTo);
+      const fromBalanceBeforeEncrypted = balanceEncrypted;
+      const toBalanceBeforeEncrypted = await contracts.tokenContract.balance_of(transferTo);
+      const fromBalanceAfterClear = fromBalanceBeforeClear - transferValue;
+
+      setStatusMessage('Encrypting new balances...');
+      const fromBalanceAfterEncrypted = await elgamalEncrypt(fromBalanceAfterClear, fromPublicKey, fromRandom);
+      const valueEncrypted = await elgamalEncrypt(transferValue, toPublicKey, toRandom);
+      const toBalanceAfterEncrypted = addEncryptedValues(toBalanceBeforeEncrypted, valueEncrypted);
+
+      setStatusMessage('Generating transfer proof...');
+      const proof_as_calldata = await getTransferProof(
+        privateKey,
+        fromRandom,
+        toRandom,
+        transferValue,
+        fromBalanceBeforeClear,
+        fromPublicKey,
+        { x: toPublicKey.x, y: toPublicKey.y },
+        fromBalanceBeforeEncrypted,
+        toBalanceBeforeEncrypted,
+        fromBalanceAfterEncrypted,
+        toBalanceAfterEncrypted,
+      );
+
+      // Reset proof status and set transaction status
+      setProofStatus(prev => ({ ...prev, transfer: false }));
+      setTxStatus(prev => ({ ...prev, transfer: true }));
+
+      setStatusMessage('Submitting transaction...');
+      const tx = await contracts.tokenContract.transfer(transferTo, proof_as_calldata.slice(1));
+      await waitForTransaction(tx.transaction_hash);
+      await updateBalance();
+      setStatusMessage('Transfer successful!');
+    } catch (error) {
+      setStatusMessage(`Error transferring: ${error.message}`);
+    } finally {
+      // Reset both statuses
+      setProofStatus(prev => ({ ...prev, transfer: false }));
+      setTxStatus(prev => ({ ...prev, transfer: false }));
+    }
   }
 
   // View transaction in explorer
@@ -453,10 +525,14 @@ const StarknetApp = () => {
               </div>
               <button
                 onClick={mint}
-                disabled={loading || !connected}
-                className="btn btn-purple"
+                disabled={loading || !connected || proofStatus.mint || txStatus.mint}
+                className={`btn ${proofStatus.mint ? 'btn-generating' : txStatus.mint ? 'btn-submitting' : 'btn-purple'}`}
               >
-                Mint
+                {proofStatus.mint
+                  ? 'Generating Proof...'
+                  : txStatus.mint
+                    ? 'Submitting Transaction...'
+                    : 'Mint'}
               </button>
             </div>
 
@@ -478,10 +554,14 @@ const StarknetApp = () => {
               </div>
               <button
                 onClick={burn}
-                disabled={loading || !connected}
-                className="btn btn-danger"
+                disabled={loading || !connected || proofStatus.burn || txStatus.burn}
+                className={`btn ${proofStatus.burn ? 'btn-generating' : txStatus.burn ? 'btn-submitting' : 'btn-danger'}`}
               >
-                Burn
+                {proofStatus.burn
+                  ? 'Generating Proof...'
+                  : txStatus.burn
+                    ? 'Submitting Transaction...'
+                    : 'Burn'}
               </button>
             </div>
 
@@ -514,10 +594,14 @@ const StarknetApp = () => {
               </div>
               <button
                 onClick={transfer}
-                disabled={loading || !connected}
-                className="btn btn-warning"
+                disabled={loading || !connected || proofStatus.transfer || txStatus.transfer}
+                className={`btn ${proofStatus.transfer ? 'btn-generating' : txStatus.transfer ? 'btn-submitting' : 'btn-warning'}`}
               >
-                Transfer
+                {proofStatus.transfer
+                  ? 'Generating Proof...'
+                  : txStatus.transfer
+                    ? 'Submitting Transaction...'
+                    : 'Transfer'}
               </button>
             </div>
           </div>
@@ -544,8 +628,7 @@ const StarknetApp = () => {
         </div>
 
         <div className="footer">
-          <p>Note: You need a Starknet wallet extension like Argent X or Braavos installed to use this app.</p>
-          <p>Replace contract addresses with your actual contract addresses.</p>
+          <p>Built with love by Argent!</p>
         </div>
       </div>
     </div>

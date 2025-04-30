@@ -164,7 +164,7 @@ export const getTransferProof = async (
         // generate the proof
         const { program } = await getTransferCircuit();
         const noir = new Noir(program);
-        const backend = new UltraHonkBackend(program.bytecode, { threads: 2 });
+        const backend = new UltraHonkBackend(program.bytecode, { threads: 5 });
         const { witness } = await noir.execute({
             from_private_key: privateKey.toString(),
             from_random: from_random.toString(),
