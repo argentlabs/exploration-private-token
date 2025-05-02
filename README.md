@@ -1,47 +1,72 @@
 ## Development
 
-### Install Noir 1.0.0-beta.3
+### Install Noir
 
 ```
-curl -L https://raw.githubusercontent.com/noir-lang/noirup/refs/heads/main/install | bash
-noirup --version 1.0.0-beta.3
+make install-noir
 ```
 
-### Install the Bartenberg prover 0.85.0
+### Install the Bartenberg prover
 
 ```
-curl -L https://raw.githubusercontent.com/AztecProtocol/aztec-packages/refs/heads/master/barretenberg/bbup/install | bash
-bbup --version 0.85.0
+make install-barretenberg
 ```
 
-### Install Garaga 0.17.0
+### Install Garaga
 
 ```
-pip install garaga==0.17.0
+make install-garaga
 ```
 
-## Building the mint circuit and verifying contract
+### Install wasm-pack
 
-In `/mint`:
-
-Compile the circuit:
 ```
-> nargo compile
+make install-wasm-pack
 ```
 
-Generate the verifying key:
+### Build the circuits
+
 ```
-> bb write_vk --scheme ultra_honk --oracle_hash keccak -b target/mint.json -o target/
-> mv target/vk target/vk.bin
+make build-circuits
 ```
 
-Generate the verifying contract from the verifying key:
+### Build the contracts
+
 ```
-> garaga gen --system ultra_keccak_honk --vk target/vk.bin
+make build-contracts
 ```
 
-## Generating a proof for the mint circuit
+### Deploy the contracts
 
+```
+make deploy-contracts
+```
+
+Keep track of the KeyRegistry and PrivateToken contract addresses and update the `app/src/constants/contracts.jsx` file with the correct values.
+
+### Build babygiant wasm
+
+```
+make build-babygiant
+```
+
+### Move the artifacts to the app
+
+```
+make artifacts
+```
+
+### Run the app
+
+```
+cd app
+npm install
+npm run dev
+```
+
+### Prooving locally using the CLI
+
+E.g. in `/mint`: 
 Set the values of the private and public inputs in `Prover_mint.toml`.
 
 Generate the witness from the inputs in `Prover_mint.toml`:
@@ -59,13 +84,6 @@ Format the proof and the public inputs as calldata for the verifying contract:
 ```
 > cd target
 > garaga calldata --system ultra_keccak_honk --vk vk.bin --proof proof.bin --format array
-```
-
-## Deploying the contracts
-
-```
-> cd scripts
-> sncast --account sepolia_test script run deploy --network sepolia
 ```
 
 ## Test use case
