@@ -93,10 +93,11 @@ const StarknetApp = () => {
       try {
         const balanceResult = await contracts.tokenContract.balance_of(account.address);
         setBalanceEncrypted(balanceResult);
+        console.log("balanceResult", balanceResult);
         console.log("Updated encrypted balance");
 
         // If we have a private key, decrypt the balance
-        if (privateKey) {
+        if (privateKey && balanceResult.c1_x != 0 && balanceResult.c1_y != 0 && balanceResult.c2_x != 0 && balanceResult.c2_y != 0) {
           try {
             // Assuming you have a function to decrypt the balance
             console.log("Decrypting balance");
@@ -181,6 +182,11 @@ const StarknetApp = () => {
       // Most wallet extensions don't support programmatic disconnect
       setAccount(null);
       setConnected(false);
+      setPrivateKey(null);
+      setPublicKey({ x: null, y: null });
+      setBalanceEncrypted(null);
+      setBalance(null);
+      setIsKeyRegistered(false);
       setStatusMessage('Wallet disconnected');
       setTxHash('');
     } catch (error) {
@@ -198,21 +204,28 @@ const StarknetApp = () => {
 
     try {
       const privKey = BigInt(inputs.privateKey.toString());
-      setPrivateKey(privKey);
+
       const pubKey = privateKeyToPublicKey(privKey);
-      setPublicKey({ x: pubKey[0], y: pubKey[1] });
+
       const registeredKey = await contracts.keyRegistryContract.get_key(account.address);
       if (registeredKey.x == 0 && registeredKey.y == 0) {
         setStatusMessage('Registering public key...');
-        await contracts.keyRegistryContract.set_key({ x: cairo.uint256(publicKey.x), y: cairo.uint256(publicKey.y) });
+        const tx = await contracts.keyRegistryContract.set_key({
+          x: cairo.uint256(pubKey[0]),
+          y: cairo.uint256(pubKey[1])
+        });
+        await waitForTransaction(tx.transaction_hash);
+        setStatusMessage('Key registered successfully');
       } else {
         setStatusMessage('Key already registered');
       }
-      setIsKeyRegistered(true);
 
+      setPrivateKey(privKey);
+      setPublicKey({ x: pubKey[0], y: pubKey[1] });
+      setIsKeyRegistered(true);
     } catch (error) {
+      console.error("Error in registerKey:", error);
       setStatusMessage(`Error registering public key: ${error.message}`);
-      return;
     }
   };
   const mint = async () => {
@@ -314,9 +327,14 @@ const StarknetApp = () => {
       const toRandom = getRandomValue();
       const fromBalanceBeforeClear = balance;
       const fromPublicKey = publicKey;
+      const toPublicKey = await contracts.keyRegistryContract.get_key(transferTo);
+      if (toPublicKey.x == 0 && toPublicKey.y == 0) {
+        setStatusMessage('Recipient has not registered their key');
+        return;
+      }
 
       setStatusMessage('Fetching recipient public key...');
-      const toPublicKey = await contracts.keyRegistryContract.get_key(transferTo);
+
       const fromBalanceBeforeEncrypted = balanceEncrypted;
       const toBalanceBeforeEncrypted = await contracts.tokenContract.balance_of(transferTo);
       const fromBalanceAfterClear = fromBalanceBeforeClear - transferValue;
@@ -465,8 +483,8 @@ const StarknetApp = () => {
       <div className="starknet-container">
         <div className="card">
           <div className="actions-grid">
-            {/* Register Key Section - Only show if private key not provided */}
-            {!privateKey && (
+            {/* Register Key Section - Show if private key not provided OR no public key registered */}
+            {(!privateKey || !publicKey.x || !publicKey.y || (publicKey.x === 0 && publicKey.y === 0)) && (
               <div className="action-section">
                 <div className="action-title">Set Private Key</div>
                 {!isKeyRegistered ? (

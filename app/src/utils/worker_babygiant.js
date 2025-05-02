@@ -17,7 +17,7 @@ self.onmessage = async (event) => {
             result
         });
     } catch (error) {
-        console.log("error", error); s
+        console.log("error", error);
         self.postMessage({
             status: 'error',
             error: "dl_not_found"
