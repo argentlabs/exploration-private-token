@@ -65,7 +65,7 @@ export const getMintProof = async (privateKey, random, value, publicKey, balance
         // generate the proof
         const { program } = await getMintCircuit();
         const noir = new Noir(program);
-        const backend = new UltraHonkBackend(program.bytecode, { threads: 2 });
+        const backend = new UltraHonkBackend(program.bytecode, { threads: 5 });
         const { witness } = await noir.execute({
             private_key: privateKey.toString(),
             random: random.toString(),
@@ -76,9 +76,9 @@ export const getMintProof = async (privateKey, random, value, publicKey, balance
             balance_after_encrypted_1: { x: balance_after.c1_x.toString(), y: balance_after.c1_y.toString() },
             balance_after_encrypted_2: { x: balance_after.c2_x.toString(), y: balance_after.c2_y.toString() }
         });
-        const proof = await backend.generateProof(witness, { keccak: true });
-        //const isValid = await backend.verifyProof(proof, { keccak: true });
-        //console.log(isValid ? "Proof is Valid" : "Proof is Invalid");
+        const proof = await backend.generateProof(witness, { starknetZK: true });
+        const isValid = await backend.verifyProof(proof, { starknetZK: true });
+        console.log(isValid ? "Proof is Valid" : "Proof is Invalid");
 
         // fetch the verification key
         const vkResponse = await fetch(mintVk);
@@ -86,8 +86,7 @@ export const getMintProof = async (privateKey, random, value, publicKey, balance
         const vkUint8Array = new Uint8Array(vkBuffer);
 
         // get the proof as callData
-        await garaga.init();
-        const proof_as_callData = garaga.getHonkCallData(proof.proof, flattenFieldsAsArray(proof.publicInputs), vkUint8Array, 0);
+        const proof_as_callData = garaga.getZKHonkCallData(proof.proof, flattenFieldsAsArray(proof.publicInputs), vkUint8Array, 1); // HonkFlavor.STARKNET = 1
         return proof_as_callData;
     } catch (err) {
         console.log(err);
@@ -109,7 +108,7 @@ export const getBurnProof = async (privateKey, random, balance_before_clear, val
         // generate the proof
         const { program } = await getBurnCircuit();
         const noir = new Noir(program);
-        const backend = new UltraHonkBackend(program.bytecode, { threads: 2 });
+        const backend = new UltraHonkBackend(program.bytecode, { threads: 5 });
         const { witness } = await noir.execute({
             private_key: privateKey.toString(),
             random: random.toString(),
@@ -121,7 +120,9 @@ export const getBurnProof = async (privateKey, random, balance_before_clear, val
             balance_after_encrypted_1: { x: balance_after.c1_x.toString(), y: balance_after.c1_y.toString() },
             balance_after_encrypted_2: { x: balance_after.c2_x.toString(), y: balance_after.c2_y.toString() }
         });
-        const proof = await backend.generateProof(witness, { keccak: true });
+        const proof = await backend.generateProof(witness, { starknetZK: true });
+        const isValid = await backend.verifyProof(proof, { starknetZK: true });
+        console.log(isValid ? "Proof is Valid" : "Proof is Invalid");
 
         // fetch the verification key
         const vkResponse = await fetch(burnVk);
@@ -130,7 +131,7 @@ export const getBurnProof = async (privateKey, random, balance_before_clear, val
 
         // get the proof as callData
         await garaga.init();
-        const proof_as_callData = garaga.getHonkCallData(proof.proof, flattenFieldsAsArray(proof.publicInputs), vkUint8Array, 0);
+        const proof_as_callData = garaga.getZKHonkCallData(proof.proof, flattenFieldsAsArray(proof.publicInputs), vkUint8Array, 1); // HonkFlavor.STARKNET = 1
         return proof_as_callData;
     } catch (err) {
         console.log(err);
@@ -182,8 +183,8 @@ export const getTransferProof = async (
             to_balance_new_encrypted_1: { x: to_balance_new_encrypted.c1_x.toString(), y: to_balance_new_encrypted.c1_y.toString() },
             to_balance_new_encrypted_2: { x: to_balance_new_encrypted.c2_x.toString(), y: to_balance_new_encrypted.c2_y.toString() },
         });
-        const proof = await backend.generateProof(witness, { keccak: true });
-        const isValid = await backend.verifyProof(proof, { keccak: true });
+        const proof = await backend.generateProof(witness, { starknetZK: true });
+        const isValid = await backend.verifyProof(proof, { starknetZK: true });
         console.log(isValid ? "Proof is Valid" : "Proof is Invalid");
 
         // fetch the verification key
@@ -193,7 +194,7 @@ export const getTransferProof = async (
 
         // get the proof as callData
         await garaga.init();
-        const proof_as_callData = garaga.getHonkCallData(proof.proof, flattenFieldsAsArray(proof.publicInputs), vkUint8Array, 0);
+        const proof_as_callData = garaga.getZKHonkCallData(proof.proof, flattenFieldsAsArray(proof.publicInputs), vkUint8Array, 1);
         return proof_as_callData;
     } catch (err) {
         console.log(err);

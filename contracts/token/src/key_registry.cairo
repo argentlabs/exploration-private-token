@@ -8,8 +8,8 @@ pub struct PublicKey {
 
 #[starknet::interface]
 pub trait IKeyRegistry<TContractState> {
-    fn set_key(ref self: TContractState, key: PublicKey);
-    fn get_key(self: @TContractState, address: ContractAddress) -> PublicKey;
+    fn set_encryption_key(ref self: TContractState, key: PublicKey);
+    fn get_encryption_key(self: @TContractState, address: ContractAddress) -> PublicKey;
 }
 
 #[starknet::contract]
@@ -20,19 +20,18 @@ mod KeyRegistry {
 
     #[storage]
     struct Storage {
-        keys: Map<ContractAddress, PublicKey>,
+        encryption_keys: Map<ContractAddress, PublicKey>,
     }
 
     #[abi(embed_v0)]
     impl KeyRegistryImpl of super::IKeyRegistry<ContractState> {
-        fn set_key(ref self: ContractState, key: PublicKey) {
+        fn set_encryption_key(ref self: ContractState, key: PublicKey) {
             let caller = get_caller_address();
-            self.keys.write(caller, key);
+            self.encryption_keys.write(caller, key);
         }
 
-        fn get_key(self: @ContractState, address: ContractAddress) -> PublicKey {
-            let key = self.keys.read(address);
-            return key;
+        fn get_encryption_key(self: @ContractState, address: ContractAddress) -> PublicKey {
+            self.encryption_keys.read(address)
         }
     }
 }

@@ -1,5 +1,9 @@
 import { Contract } from 'starknet';
 
+// Token Contract Address
+const TOKEN_CONTRACT_ADDRESS = '0x564dd2fe61825b08ecd0715072f7a6d0c95c2b5930d6e2cd9238f6e8c02c8f2';
+const KEY_REGISTRY_ADDRESS = '0x3d198de23002ca307a9016c5e4d35f15e2b10151663779ec7a44bfed934aa64';
+
 // Create Contract instances
 export const createContracts = (account) => {
     if (!account) {
@@ -32,7 +36,7 @@ export const createContracts = (account) => {
 
 // Export contract addresses and ABIs
 export const TOKEN_CONTRACT = {
-    address: '0x39622eb39a5cbfa94bb29a8d553c74c899a2e6e0fdede7807ef73e21f11f97e',
+    address: TOKEN_CONTRACT_ADDRESS,
     abi: [
         {
             "type": "impl",
@@ -198,7 +202,7 @@ export const TOKEN_CONTRACT = {
 }
 
 export const KEY_REGISTRATION_CONTRACT = {
-    address: '0x1bb46de423c6954179bd8c0102c8fbec2c5c7a4aff2c5b5933f93049c0cff16',
+    address: KEY_REGISTRY_ADDRESS,
     abi: [
         {
             "type": "impl",
@@ -239,7 +243,7 @@ export const KEY_REGISTRATION_CONTRACT = {
             "items": [
                 {
                     "type": "function",
-                    "name": "set_key",
+                    "name": "set_encryption_key",
                     "inputs": [
                         {
                             "name": "key",
@@ -251,7 +255,7 @@ export const KEY_REGISTRATION_CONTRACT = {
                 },
                 {
                     "type": "function",
-                    "name": "get_key",
+                    "name": "get_encryption_key",
                     "inputs": [
                         {
                             "name": "address",

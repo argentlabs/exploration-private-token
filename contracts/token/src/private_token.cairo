@@ -19,24 +19,15 @@ pub trait IPrivateToken<TContractState> {
 
 #[starknet::contract]
 pub mod PrivateToken {
-    use burn::honk_verifier::{
-        IUltraKeccakHonkVerifierDispatcher as IBurnVerifierDispatcher,
-        IUltraKeccakHonkVerifierDispatcherTrait as IBurnVerifierDispatcherTrait,
-    };
-    use mint::honk_verifier::{
-        IUltraKeccakHonkVerifierDispatcher as IMintVerifierDispatcher,
-        IUltraKeccakHonkVerifierDispatcherTrait as IMintVerifierDispatcherTrait,
-    };
+    use burn::honk_verifier::{IBurnVerifierDispatcher, IBurnVerifierDispatcherTrait};
+    use mint::honk_verifier::{IMintVerifierDispatcher, IMintVerifierDispatcherTrait};
     use starknet::storage::{
         Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
         StoragePointerWriteAccess,
     };
     use starknet::{ContractAddress, get_caller_address};
     use token::key_registry::{IKeyRegistryDispatcher, IKeyRegistryDispatcherTrait, PublicKey};
-    use transfer::honk_verifier::{
-        IUltraKeccakHonkVerifierDispatcher as ITransferVerifierDispatcher,
-        IUltraKeccakHonkVerifierDispatcherTrait as ITransferVerifierDispatcherTrait,
-    };
+    use transfer::honk_verifier::{ITransferVerifierDispatcher, ITransferVerifierDispatcherTrait};
     use super::{EncryptedValue, IPrivateToken};
 
     #[storage]
@@ -77,7 +68,7 @@ pub mod PrivateToken {
             let key_registry = IKeyRegistryDispatcher {
                 contract_address: self.key_registry.read(),
             };
-            let public_key = key_registry.get_key(caller);
+            let public_key = key_registry.get_encryption_key(caller);
 
             // Get the caller encryted balance
             let balance_before = self.balance.read(caller);
@@ -86,7 +77,7 @@ pub mod PrivateToken {
             let mint_verifier = IMintVerifierDispatcher {
                 contract_address: self.mint_verifier.read(),
             };
-            let valid = mint_verifier.verify_ultra_keccak_honk_proof(proof_with_inputs);
+            let valid = mint_verifier.verify_ultra_starknet_zk_honk_proof(proof_with_inputs);
             let public_inputs = match valid {
                 Option::Some(public_inputs) => public_inputs,
                 Option::None => {
@@ -145,7 +136,7 @@ pub mod PrivateToken {
             let key_registry = IKeyRegistryDispatcher {
                 contract_address: self.key_registry.read(),
             };
-            let public_key = key_registry.get_key(caller);
+            let public_key = key_registry.get_encryption_key(caller);
 
             // Get the caller encryted balance
             let balance_before = self.balance.read(caller);
@@ -154,7 +145,7 @@ pub mod PrivateToken {
             let burn_verifier = IBurnVerifierDispatcher {
                 contract_address: self.burn_verifier.read(),
             };
-            let valid = burn_verifier.verify_ultra_keccak_honk_proof(proof_with_inputs);
+            let valid = burn_verifier.verify_ultra_starknet_zk_honk_proof(proof_with_inputs);
             let public_inputs = match valid {
                 Option::Some(public_inputs) => public_inputs,
                 Option::None => {
@@ -216,8 +207,8 @@ pub mod PrivateToken {
             };
 
             // Get the public keys
-            let from_public_key = key_registry.get_key(caller);
-            let to_public_key = key_registry.get_key(to);
+            let from_public_key = key_registry.get_encryption_key(caller);
+            let to_public_key = key_registry.get_encryption_key(to);
 
             // Get the encrypted balances
             let from_balance_before = self.balance.read(caller);
@@ -227,7 +218,7 @@ pub mod PrivateToken {
             let transfer_verifier = ITransferVerifierDispatcher {
                 contract_address: self.transfer_verifier.read(),
             };
-            let valid = transfer_verifier.verify_ultra_keccak_honk_proof(proof_with_inputs);
+            let valid = transfer_verifier.verify_ultra_starknet_zk_honk_proof(proof_with_inputs);
             let public_inputs = match valid {
                 Option::Some(public_inputs) => public_inputs,
                 Option::None => {

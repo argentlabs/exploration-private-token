@@ -82,7 +82,7 @@ const StarknetApp = () => {
 
   const updatePublicKey = async () => {
     if (connected && account && contracts) {
-      const registeredKey = await contracts.keyRegistryContract.get_key(account.address);
+      const registeredKey = await contracts.keyRegistryContract.get_encryption_key(account.address);
       setPublicKey({ x: registeredKey.x, y: registeredKey.y });
     }
   }
@@ -207,10 +207,10 @@ const StarknetApp = () => {
 
       const pubKey = privateKeyToPublicKey(privKey);
 
-      const registeredKey = await contracts.keyRegistryContract.get_key(account.address);
+      const registeredKey = await contracts.keyRegistryContract.get_encryption_key(account.address);
       if (registeredKey.x == 0 && registeredKey.y == 0) {
         setStatusMessage('Registering public key...');
-        const tx = await contracts.keyRegistryContract.set_key({
+        const tx = await contracts.keyRegistryContract.set_encryption_key({
           x: cairo.uint256(pubKey[0]),
           y: cairo.uint256(pubKey[1])
         });
@@ -327,7 +327,7 @@ const StarknetApp = () => {
       const toRandom = getRandomValue();
       const fromBalanceBeforeClear = balance;
       const fromPublicKey = publicKey;
-      const toPublicKey = await contracts.keyRegistryContract.get_key(transferTo);
+      const toPublicKey = await contracts.keyRegistryContract.get_encryption_key(transferTo);
       if (toPublicKey.x == 0 && toPublicKey.y == 0) {
         setStatusMessage('Recipient has not registered their key');
         return;

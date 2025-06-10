@@ -1,0 +1,28 @@
+[package]
+name = "scripts"
+version = "0.1.0"
+edition = "2024_07"
+
+
+[dependencies]
+starknet = "2.11.4"
+sncast_std = "0.44.0"
+mint = { path = "../mint" }
+burn = { path = "../burn" }
+transfer = { path = "../transfer" }
+token = { path = "../token" }
+
+[cairo]
+sierra-replace-ids = true
+inlining-strategy = 2
+
+[lib]
+sierra = true
+casm = true
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
+casm-add-pythonic-hints = true
+build-external-contracts = ["mint::honk_verifier::MintVerifier", "transfer::honk_verifier::TransferVerifier", "burn::honk_verifier::BurnVerifier", "token::key_registry::KeyRegistry", "token::private_token::PrivateToken"]
+

@@ -1,0 +1,15 @@
+# Ignore build artifacts
+target/
+target/*
+
+# Ignore node_modules
+/node_modules/
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.iml
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
