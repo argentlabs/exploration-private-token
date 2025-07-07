@@ -42,8 +42,6 @@ make build-contracts
 make deploy-contracts
 ```
 
-Keep track of the KeyRegistry and PrivateToken contract addresses and update the `app/src/constants/contracts.jsx` file with the correct values.
-
 ### Build babygiant wasm
 
 ```
